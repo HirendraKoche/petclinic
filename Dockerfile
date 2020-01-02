@@ -1,21 +1,26 @@
-FROM java:8-jre
+FROM hirendrakoche/jre:8 as builder
 
-ENV CATALINA_HOME /usr/local/tomcat
-ENV PATH $CATALINA_HOME/bin:$PATH
+ENV MAVEN_HOME /opt/maven
+ENV PATH ${MAVEN_HOME}/bin:$PATH
+ENV SOURCE_DIR /root/source
 
-RUN mkdir -p "$CATALINA_HOME" \
-    && apt-get update
+WORKDIR ${MAVEN_HOME}
 
-WORKDIR $CATALINA_HOME
+RUN set -eux; \
+    yum install -y tar gzip; \
+    rm -rf /var/cache/yum; \
+    curl -s http://www-us.apache.org/dist/maven/maven-3/3.6.3/binaries/apache-maven-3.6.3-bin.tar.gz | tar xvz --strip-component 1
 
-ENV TOMCAT_MAJOR 8
-ENV TOMCAT_VERSION 8.5.34
-ENV TOMCAT_TGZ_URL https://www.apache.org/dist/tomcat/tomcat-$TOMCAT_MAJOR/v$TOMCAT_VERSION/bin
-RUN set -x \
-    && wget $TOMCAT_TGZ_URL/apache-tomcat-$TOMCAT_VERSION.tar.gz \
-    && tar -xvf apache-tomcat-$TOMCAT_VERSION.tar.gz --strip-components=1
+WORKDIR ${SOURCE_DIR}
 
-ADD ./petclinic.war $CATALINA_HOME/webapps/
+ADD . .
 
-EXPOSE 8080
-CMD ["catalina.sh", "run"]
+RUN set -eux;\
+    mvn clean package
+
+
+FROM hirendrakoche/tomcat:9.0.30
+
+WORKDIR ${CATALINA_HOME}/webapps
+
+COPY --from=builder /root/source/target/petclinic.war .

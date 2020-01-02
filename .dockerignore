@@ -1,0 +1,8 @@
+# Dont add below files to docker image
+.gitignore
+Dockerfile
+Jenkinsfile
+docker-compose.yml
+
+# Dont add below folders to docker image
+.git
