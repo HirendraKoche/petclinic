@@ -28,7 +28,7 @@ pipeline{
 
 		stage("Archieve Artifacts"){
 			steps{
-				archiveArtifacts artifacts: 'tartget/*.war', onlyIfSuccessful: true
+				archiveArtifacts artifacts: 'target/*.war', onlyIfSuccessful: true
 			}
 		}
 		
