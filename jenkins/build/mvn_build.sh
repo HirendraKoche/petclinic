@@ -1,5 +1,3 @@
 #!/bin/bash
 
-JENKINS_CONTAINER=$(docker container ls -q --filter name=_jenkins)
-
-docker container run --rm --volumes-from=$JENKINS_CONTAINER -w $JENKINS_HOME/workspace/Pipeline_Petclinic $HOME/.m2:/root/.m2 -w /app maven:3-alpine $@
+docker run --rm --volumes-from=$(docker container ls -q --filter name=_jenkins) -w $JENKINS_HOME/workspace/Pipeline_Petclinic maven:3-alpine "$@"
