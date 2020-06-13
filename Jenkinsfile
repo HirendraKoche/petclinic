@@ -48,6 +48,12 @@ pipeline{
 		always{
 			emailext body: '''Please find below status of the job.\n$JOB_NAME #$BUILD_NUMBER : $BUILD_STATUS\nPlease review logs at $BUILD_URL''', subject: '$JOB_NAME #$BUILD_NUMBER : $BUILD_STATUS', to: 'hirendrakoche1@outlook.com'
 		}
+	
+		success{
+			sh '''
+				./jenkins/docker/deploy.sh
+			   '''
+		}
 
 		failure{
 			echo "Failure"
