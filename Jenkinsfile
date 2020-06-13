@@ -3,17 +3,9 @@ pipeline{
 	
 	stages{
 		stage("Build Application"){
-			agent{
-                                docker{
-                                        image 'maven:3-alpine'
-                                        args '-v $PWD:/app'
-					args '-v $JENKINS_HOME/.m2:/root/.m2'
-                                        args '-w /app'
-				}
-                        }
 			steps{
 				sh '''
-					mvn -B -DskipTest clean package
+					./jenkins/build/mvn_build.sh
 		   		   '''
 			}
 		}
