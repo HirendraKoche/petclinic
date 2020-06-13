@@ -1,10 +1,5 @@
 pipeline{
 	agent any
-
-	environment{
-		REPO_USER='hirendrakoche'
-		REPO_PASS=credentials('')
-	}
 	
 	stages{
 		stage("Build Application"){
@@ -30,9 +25,13 @@ pipeline{
 		}
 		
 		stage("Push Image to Repository"){
+			environment{
+                		REPO_USER='hirendrakoche'
+               			REPO_PASS=credentials('docker-hub-pass')
+        		}
 			steps{
 				sh '''
-					./jenkins/docker/pushImage.sh
+					./jenkins/docker/pushImage.sh $REPO_USER $REPO_PASS
 				   '''
 			}
 		}
