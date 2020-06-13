@@ -46,6 +46,7 @@ pipeline{
 
 		stage("Publish Test Results"){
 			steps{
+				sh 'sleep 2'	
 				junit 'target/surefire-reports/*.xml'
 			}
 		}
