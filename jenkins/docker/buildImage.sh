@@ -2,4 +2,4 @@
 
 sleep 5
 
-docker build -t hirendrakoche/petclinic:$BUILD_TAG $PWD
+docker build -t hirendrakoche/petclinic:$BUILD_NUMBER $PWD
