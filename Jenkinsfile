@@ -50,9 +50,10 @@ pipeline{
 		}
 	
 		success{
-			sh '''
-				./jenkins/docker/deploy.sh
-			   '''
+                        ansiColor('xterm') {
+                           ansiblePlaybook disableHostKeyChecking: true, extras: 'BUILD_TAG=$BUILD_TAG', inventory: 'jenkins/docker/deploy/host', playbook: 'jenkins/docker/deploy/deploy.yml'
+                        }
+			
 		}
 
 		failure{

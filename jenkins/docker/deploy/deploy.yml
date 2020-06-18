@@ -1,0 +1,23 @@
+---
+  - hosts: docker-master
+    
+    tasks:
+      - name: Install docker dependancies
+        pip:
+          name: jsondiff, pyyaml
+      - name: Deploy application
+        docker_stack:
+          state: present
+          name: petclinic
+          compose:
+            - version: '3'
+              services:
+                 petclinic:
+                   image: hirendrakoche/petclinic:{{ BUILD_TAG }}
+                   ports:
+                     - 8081:8080
+                   networks:
+                     - petclinic
+              networks:
+                petclinic:
+                       
