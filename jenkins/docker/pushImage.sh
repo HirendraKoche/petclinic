@@ -8,4 +8,4 @@ REPO_HOST=$3
 docker login -u $REPO_USER -p $REPO_PASS $REPO_HOST
 
 # push image
-docker push hirendrakoche/petclinic:$BUILD_TAG
+docker push hirendrakoche/petclinic:$BUILD_NUMBER
