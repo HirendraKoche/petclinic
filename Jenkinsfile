@@ -51,7 +51,7 @@ pipeline{
 	
 		success{
                         ansiColor('xterm') {
-                           ansiblePlaybook colorized: true, disableHostKeyChecking: true, extraVars: [BUILD_TAG: "$BUILD_NUMBER"], inventory: 'jenkins/docker/deploy/host', playbook: 'jenkins/docker/deploy/deploy.yml'
+                           ansiblePlaybook colorized: true, disableHostKeyChecking: true, extraVars: [BUILD_TAG: "$BUILD_NUMBER"], inventory: 'jenkins/docker/deploy/hosts', playbook: 'jenkins/docker/deploy/deploy.yml'
                         }
 			
 		}
