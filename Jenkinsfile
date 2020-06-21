@@ -11,23 +11,13 @@ pipeline{
 
 			post{
 				failure{
-					script{
-						
-						def searchResult = jiraJqlSearch jql: "project = PET AND issuekey = 'PET-1'", site: 'jira'
-						def issues = searchResult.data.issues
-
-						for (i=0; i < issues.size(); i++){
-							def result = jiraGetIssue idOrKey: issues[i].key, site: 'jira'
-							echo result.data.toString()
-						}
-
-						
-					/*	def newIssue = [
+					script{				
+						def newIssue = [
 							fields: [
 								project: [key: 'PET'],
 								summary: "${JOB_NAME} #${BUILD_NUMBER} Failed.",
 								description: 'Build failed. Please check attached logs.',
-								issuetype: [ name: 'Bug' ],
+								issuetype: [ name: 'Task' ],
 								priority: [ name: 'High'],
 								components: [[ name: 'User Interface' ]]
 							]
@@ -35,7 +25,6 @@ pipeline{
 
 						response = jiraNewIssue issue: newIssue, site: 'jira'
 						echo response.successful.toString()
-      					echo response.data.toString() */
 					}
 					
 				}
@@ -82,9 +71,13 @@ pipeline{
 		}
 	
 		success{
-                        ansiColor('xterm') {
-                           ansiblePlaybook colorized: true, disableHostKeyChecking: true, extraVars: [BUILD_TAG: "$BUILD_NUMBER"], inventory: 'jenkins/docker/deploy/hosts', playbook: 'jenkins/docker/deploy/deploy.yml'
-                        }
+			emailext body: '''Build process completed. If you want proceed with deployment, acces below URL.\nPlease review logs at $BUILD_URL''', subject: '$JOB_NAME #$BUILD_NUMBER : $BUILD_STATUS', to: 'hirendrakoche1@outlook.com'
+
+			input id: 'Deploy', message: 'Build is successful. Do you want to proceed for deployment?', submitter: 'admin', submitterParameter: 'approver'
+
+            ansiColor('xterm') {
+            	ansiblePlaybook colorized: true, disableHostKeyChecking: true, extraVars: [BUILD_TAG: "$BUILD_NUMBER"], inventory: 'jenkins/docker/deploy/hosts', playbook: 'jenkins/docker/deploy/deploy.yml'
+            }
 		}
 
 	}
