@@ -5,7 +5,7 @@ pipeline{
 		stage("Build Application"){
 			steps{
 				sh '''
-					./jenkins/build/mvn_build mvn -Dmaven.repo.local=$JENKINS_HOME/.m2 clean install
+					./jenkins/build/mvn_build.sh mvn -Dmaven.repo.local=$JENKINS_HOME/.m2 clean install
 		   		   '''
 			}
 
