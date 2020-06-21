@@ -70,7 +70,7 @@ pipeline{
 	post{
 		
 		success{
-			emailext body: '''Build process completed. If you want proceed with deployment, acces below URL.\n$BUILD_URLinput''', subject: '$JOB_NAME #$BUILD_NUMBER : $BUILD_STATUS', to: 'hirendrakoche1@outlook.com'
+			emailext body: '''Build process completed. If you want proceed with deployment, acces below URL.\n${BUILD_URL}input''', subject: '$JOB_NAME #$BUILD_NUMBER : $BUILD_STATUS', to: 'hirendrakoche1@outlook.com'
 
 			input id: 'Deploy', message: 'Build is successful. Do you want to proceed for deployment?', submitter: 'admin', submitterParameter: 'approver'
 
