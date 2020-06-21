@@ -5,8 +5,25 @@ pipeline{
 		stage("Build Application"){
 			steps{
 				sh '''
-					./jenkins/build/mvn_build.sh mvn -Dmaven.repo.local=$JENKINS_HOME/.m2 clean install
+					./jenkins/build/mvn_build mvn -Dmaven.repo.local=$JENKINS_HOME/.m2 clean install
 		   		   '''
+			}
+
+			post{
+				failure{
+					def newIssue = [
+						fields: [
+							project: [id: '10000']
+							summary: '${JOB_NAME} #${BUILD_NUMBER} Failed.'
+							descript: 'Build failed. Please check attached logs.'
+							issueType: [id: '10001']
+						]
+					]
+
+					response = jiraNewIssue issue: newIssue, site: 'jira'
+					echo response.successful.toString()
+      				echo response.data.toString()
+				}
 			}
 		}
 
@@ -53,11 +70,7 @@ pipeline{
                         ansiColor('xterm') {
                            ansiblePlaybook colorized: true, disableHostKeyChecking: true, extraVars: [BUILD_TAG: "$BUILD_NUMBER"], inventory: 'jenkins/docker/deploy/hosts', playbook: 'jenkins/docker/deploy/deploy.yml'
                         }
-			
 		}
 
-		failure{
-			echo "Failure"
-		}
 	}
 }
