@@ -11,18 +11,23 @@ pipeline{
 
 			post{
 				failure{
-					def newIssue = [
-						fields: [
-							project: [id: '10000'],
-							summary: "${JOB_NAME} #${BUILD_NUMBER} Failed.",
-							descript: 'Build failed. Please check attached logs.',
-							issueType: [id: '10001']
+					stage('Jira'){
+						def newIssue = [
+							fields: [
+								project: [id: '10000'],
+								summary: "${JOB_NAME} #${BUILD_NUMBER} Failed.",
+								descript: 'Build failed. Please check attached logs.',
+								issueType: [id: '10001'],
+								priority: [ name: 'Highest'],
+								component: [[name: 'User Interface']]
+							]
 						]
-					]
 
-					response = jiraNewIssue issue: newIssue, site: 'jira'
-					echo response.successful.toString()
-      				echo response.data.toString()
+						response = jiraNewIssue issue: newIssue, site: 'jira'
+						echo response.successful.toString()
+      					echo response.data.toString()
+					}
+					
 				}
 			}
 		}
