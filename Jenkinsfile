@@ -11,7 +11,7 @@ pipeline{
 
 			post{
 				failure{
-					stage('Jira'){
+					steps{
 						def newIssue = [
 							fields: [
 								project: [id: '10000'],
