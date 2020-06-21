@@ -14,7 +14,12 @@ pipeline{
 					script{
 						
 						def searchResult = jiraJqlSearch jql: "project = PET AND issuekey = 'PET-1'", site: 'jira'
-						echo searchResult.data.toString()
+						def issues = searchResult.data.issues
+
+						for (i=0; i < issues.size(); i++){
+							def result = jiraGetIssues idOrKey: issues[i].key
+							result.data.toString()
+						}
 
 						
 					/*	def newIssue = [
