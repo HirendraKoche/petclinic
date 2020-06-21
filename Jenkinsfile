@@ -12,9 +12,14 @@ pipeline{
 			post{
 				failure{
 					script{
-						def newIssue = [
+						
+						def searchResult = jiraJqlSearch jql: "project = PET AND issuekey = 'PET-1'", site: 'jira'
+						echo searchResult.data.toString()
+
+						
+					/*	def newIssue = [
 							fields: [
-								project: [id: '10000'],
+								project: [key: 'PET'],
 								summary: "${JOB_NAME} #${BUILD_NUMBER} Failed.",
 								description: 'Build failed. Please check attached logs.',
 								issuetype: [ name: 'Bug' ],
@@ -25,7 +30,7 @@ pipeline{
 
 						response = jiraNewIssue issue: newIssue, site: 'jira'
 						echo response.successful.toString()
-      					echo response.data.toString()
+      					echo response.data.toString() */
 					}
 					
 				}
