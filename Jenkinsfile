@@ -12,7 +12,7 @@ pipeline{
 			post{
 				failure{
 					step{
-						def newIssue = [
+						response = jiraNewIssue issue: [
 							fields: [
 								project: [id: '10000'],
 								summary: "${JOB_NAME} #${BUILD_NUMBER} Failed.",
@@ -21,9 +21,7 @@ pipeline{
 								priority: [ name: 'Highest'],
 								component: [[name: 'User Interface']]
 							]
-						]
-
-						response = jiraNewIssue issue: newIssue, site: 'jira'
+						], site: 'jira'
 						echo response.successful.toString()
       					echo response.data.toString()
 					}
