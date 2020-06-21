@@ -24,13 +24,21 @@ pipeline{
 						]
 
 						response = jiraNewIssue issue: newIssue, site: 'jira'
-						echo response.successful.toString()
+						
+						def notify = [
+							fields: [
+								subject: "${JOB_NAME} #${BUILD_NUMBER} Failed."
+								testbody: "Build failed. Jira issue" + response.data.key + " has been created."
+								to: [
+									reporter: true,
+									assignee: true
+								]
+							]
+						]
 
-						def issueLink = jiraGetIssueLink id: response.data.id.toString(), site: 'jira'
-						echo issueLink.data.toString()
+						jiraNotifyIssue idOrKey: response.data.key, notify: notify, site: 'jira'
+
 					}
-
-					emailext body: '''Please find below status of the job.\n$JOB_NAME #$BUILD_NUMBER : $BUILD_STATUS\nPlease review logs at $BUILD_URL''', subject: '$JOB_NAME #$BUILD_NUMBER : $BUILD_STATUS', to: 'hirendrakoche1@outlook.com'
 					
 				}
 			}
