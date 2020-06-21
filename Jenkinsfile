@@ -5,7 +5,7 @@ pipeline{
 		stage("Build Application"){
 			steps{
 				sh '''
-					./jenkins/build/mvn_build.sh mvn -Dmaven.repo.local=$JENKINS_HOME/.m2 clean install
+					./jenkins/build/mvn_build mvn -Dmaven.repo.local=$JENKINS_HOME/.m2 clean install
 		   		   '''
 			}
 
@@ -25,6 +25,9 @@ pipeline{
 
 						response = jiraNewIssue issue: newIssue, site: 'jira'
 						echo response.successful.toString()
+
+						def issueLink = jiraGetIssueLink id: response.data.id.toString(), site: 'jira'
+						echo issueLink.data.toString()
 					}
 
 					emailext body: '''Please find below status of the job.\n$JOB_NAME #$BUILD_NUMBER : $BUILD_STATUS\nPlease review logs at $BUILD_URL''', subject: '$JOB_NAME #$BUILD_NUMBER : $BUILD_STATUS', to: 'hirendrakoche1@outlook.com'
