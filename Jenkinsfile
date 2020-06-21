@@ -19,7 +19,7 @@ pipeline{
 								description: 'Build failed. Please check attached logs.',
 								issuetype: [ name: 'Bug' ],
 								priority: [ name: 'High'],
-								components: [ name: 'User Interface' ]
+								components: [[ name: 'User Interface' ]]
 							]
 						]
 
