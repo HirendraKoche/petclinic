@@ -25,18 +25,19 @@ pipeline{
 
 						response = jiraNewIssue issue: newIssue, site: 'jira'
 						
-					/*	def notify = [
+						def notify = [
 							fields: [
 								subject: "${JOB_NAME} #${BUILD_NUMBER} Failed.",
-							//	textBody: "Build failed. Jira issue" + response.data.key + " has been created.",
+								textBody: "Build failed. Jira issue" + response.data.key + " has been created.",
 								htmlBody: "Build failed. Jira issue" + response.data.key + " has been created.",
 								to: [
-									assignee: true
+									assignee: true,
+									reporter: true
 								]
 							]
 						]
 
-						jiraNotifyIssue idOrKey: response.data.key, notify: notify, site: 'jira' */
+						jiraNotifyIssue idOrKey: response.data.key, notify: notify, site: 'jira' 
 
 					}
 					
