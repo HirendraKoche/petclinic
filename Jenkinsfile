@@ -28,7 +28,7 @@ pipeline{
 						def notify = [
 							fields: [
 								subject: "${JOB_NAME} #${BUILD_NUMBER} Failed."
-								testbody: "Build failed. Jira issue" + response.data.key + " has been created."
+								textBody: "Build failed. Jira issue" + response.data.key + " has been created."
 								to: [
 									reporter: true,
 									assignee: true
