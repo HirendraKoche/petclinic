@@ -17,7 +17,7 @@ pipeline{
 								project: [id: '10000'],
 								summary: "${JOB_NAME} #${BUILD_NUMBER} Failed.",
 								descript: 'Build failed. Please check attached logs.',
-								issuetype: [name: 'Build Fail'],
+								issuetype: 'Build Fail',
 								priority: [ name: 'Highest'],
 								component: [[name: 'User Interface']]
 							]
