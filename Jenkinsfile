@@ -36,7 +36,7 @@ pipeline{
 							]
 						]
 
-						jiraNotifyIssue idOrKey: response.data.key, notify: notify, site: 'jira' *\
+						jiraNotifyIssue idOrKey: response.data.key, notify: notify, site: 'jira' */
 
 					}
 					
