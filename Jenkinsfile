@@ -17,7 +17,7 @@ pipeline{
 						def issues = searchResult.data.issues
 
 						for (i=0; i < issues.size(); i++){
-							def result = jiraGetIssues idOrKey: issues[i].key
+							def result = jiraGetIssue idOrKey: issues[i].key
 							result.data.toString()
 						}
 
