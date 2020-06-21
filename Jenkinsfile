@@ -29,6 +29,7 @@ pipeline{
 							fields: [
 								subject: "${JOB_NAME} #${BUILD_NUMBER} Failed.",
 								textBody: "Build failed. Jira issue" + response.data.key + " has been created.",
+								htmlBody: "Build failed. Jira issue" + response.data.key + " has been created.",
 								to: [
 									reporter: true,
 									assignee: true
