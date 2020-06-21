@@ -26,6 +26,8 @@ pipeline{
 						response = jiraNewIssue issue: newIssue, site: 'jira'
 						echo response.successful.toString()
 					}
+
+					emailext body: '''Please find below status of the job.\n$JOB_NAME #$BUILD_NUMBER : $BUILD_STATUS\nPlease review logs at $BUILD_URL''', subject: '$JOB_NAME #$BUILD_NUMBER : $BUILD_STATUS', to: 'hirendrakoche1@outlook.com'
 					
 				}
 			}
@@ -66,12 +68,9 @@ pipeline{
 	}
 	
 	post{
-		always{
-			emailext body: '''Please find below status of the job.\n$JOB_NAME #$BUILD_NUMBER : $BUILD_STATUS\nPlease review logs at $BUILD_URL''', subject: '$JOB_NAME #$BUILD_NUMBER : $BUILD_STATUS', to: 'hirendrakoche1@outlook.com'
-		}
-	
+		
 		success{
-			emailext body: '''Build process completed. If you want proceed with deployment, acces below URL.\nPlease review logs at $BUILD_URL''', subject: '$JOB_NAME #$BUILD_NUMBER : $BUILD_STATUS', to: 'hirendrakoche1@outlook.com'
+			emailext body: '''Build process completed. If you want proceed with deployment, acces below URL.\n$BUILD_URLinput''', subject: '$JOB_NAME #$BUILD_NUMBER : $BUILD_STATUS', to: 'hirendrakoche1@outlook.com'
 
 			input id: 'Deploy', message: 'Build is successful. Do you want to proceed for deployment?', submitter: 'admin', submitterParameter: 'approver'
 
