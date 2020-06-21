@@ -13,9 +13,9 @@ pipeline{
 				failure{
 					def newIssue = [
 						fields: [
-							project: [id: '10000']
-							summary: "${JOB_NAME} #${BUILD_NUMBER} Failed."
-							descript: 'Build failed. Please check attached logs.'
+							project: [id: '10000'],
+							summary: "${JOB_NAME} #${BUILD_NUMBER} Failed.",
+							descript: 'Build failed. Please check attached logs.',
 							issueType: [id: '10001']
 						]
 					]
