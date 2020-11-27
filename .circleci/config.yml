@@ -10,3 +10,9 @@ jobs:
                 name: Build code
                 command:
                     mvn clean package
+                    
+            - store_test_results:
+                path: test-results
+                
+            - store_artifacts:
+                path: /tmp/artifacts
