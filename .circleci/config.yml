@@ -12,7 +12,7 @@ jobs:
                     mvn clean package
 
             - store_artifacts:
-                path: target/
+                path: "target/*.war"
             
             - store_test_results:
-                path: target/surefire-reports/
+                path: "target/surefire-reports/*.xml"
