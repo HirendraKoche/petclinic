@@ -1,8 +1,9 @@
-version: 2.1
+version: 2.0
 jobs:
-    PetClinic:
+    petclinic:
         docker:
-            - image: maven:latest    
+            - image: maven:latest
+
         steps:
             - checkout
             - run:
