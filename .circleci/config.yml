@@ -1,6 +1,6 @@
 version: 2.0
 jobs:
-    petclinic:
+    build:
         docker:
             - image: maven:latest
 
