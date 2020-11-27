@@ -1,0 +1,9 @@
+version: 2.1
+jobs:
+    build:
+        - image: maven:latest
+        - checkout
+        - run:
+            name: Build code
+            command:
+                mvn clean package
