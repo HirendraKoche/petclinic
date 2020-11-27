@@ -1,11 +1,11 @@
 version: 2.1
 jobs:
-    build:
-        - image: maven:latest
-        
-    steps:
-        - checkout
-        - run:
-            name: Build code
-            command:
-                mvn clean package
+    PetClinic:
+        docker:
+            - image: maven:latest    
+        steps:
+            - checkout
+            - run:
+                name: Build code
+                command:
+                    mvn clean package
