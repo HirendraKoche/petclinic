@@ -1,0 +1,26 @@
+kind: Deployment
+apiversion: apps/v1
+metadata:
+    name: petclinic
+    labels:
+        app: petclinic
+        env: dev
+spec:
+    replicas: 2
+    selector:
+        matchLabels:
+            app: petclinic
+            env: dev
+    template:
+        metadata:
+            name: petclinic
+            labels:
+                app: petclinic
+                env: dev
+        spec:
+            containers:
+                - name: petclinic
+                  image: petclinic:BUILD
+                  resources: {}
+                  ports:
+                    - containerPort: 8080
