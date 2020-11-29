@@ -1,95 +1,58 @@
-pipeline{
-	agent any
-	
-	stages{
-		stage("Build Application"){
-			steps{
-				sh '''
-					./jenkins/build/mvn_build.sh mvn -Dmaven.repo.local=$JENKINS_HOME/.m2 clean install
-		   		   '''
-			}
+stage 'CI'
+node {
+    
+    notify("STARTED")
+    // Download code from repo
+    stage 'CHECKOUT'
+    checkout scm
+    //git credentialsId: 'github-user', url: 'https://github.com/HirendraKoche/Maven-petclinic-project.git'
+    
+    // Build code using docker image maven:3-apline
+    stage 'BUILD'
+    bat 'docker run --rm -v %M2_REPO%:/root/.m2 -v %WORKSPACE%:/code -w /code maven:3-alpine mvn clean package'
+    
+    stage 'Archieve Artifacts'
+    stash includes: 'target/*.war, Dockerfile', name: 'petclinic-build-stash'
+    stash includes: 'kube-petclinic.yaml', name: 'kube-petclinic'
+    archiveArtifacts allowEmptyArchive: true, artifacts: 'target/*.war', followSymlinks: false, onlyIfSuccessful: true
+    
+    stage 'Publish Test Results'
+    junit allowEmptyResults: true, testResults: 'target/surefire-reports/*.xml'
+    jacoco classPattern: 'target/classes', execPattern: 'target/jacoco.exec'
+    notify("COMPLETED")
+    
+}
 
-			post{
-				failure{
-					script{				
-						def newIssue = [
-							fields: [
-								project: [key: 'PET'],
-								summary: "${JOB_NAME} #${BUILD_NUMBER} Failed.",
-								description: 'Build failed. Please check attached logs.',
-								issuetype: [ name: 'Task' ],
-								priority: [ name: 'High'],
-								components: [[ name: 'User Interface' ]]
-							]
-						]
+stage 'Create Docker Image'
+node('agent1'){
+    // clean workspace
+    bat 'DEL /F/Q/S *.* > NUL'
+     
+    // Unstash artifacts.
+    unstash 'petclinic-build-stash'
+    
+    // Build docker image from unstashed artifacts
+    bat 'docker build -t petclinic:%BUILD_NUMBER% .'
+    notify('Waiting to Deploy....')
+}
 
-						response = jiraNewIssue issue: newIssue, site: 'jira'
-						
-						def notify = [
-							fields: [
-								subject: "${JOB_NAME} #${BUILD_NUMBER} Failed.",
-								textBody: "Build failed. Jira issue" + response.data.key + " has been created.",
-								htmlBody: "Build failed. Jira issue" + response.data.key + " has been created.",
-								to: [
-									assignee: true,
-									reporter: true
-								]
-							]
-						]
+stage 'Deploy'
+input 'Build is ready to deploy. Do you wanted to proceed?'
+node('agent1') {
 
-						jiraNotifyIssue idOrKey: response.data.key, notify: notify, site: 'jira' 
+    // clean workspace
+    bat 'DEL /F/Q/S *.* > NUL'
+    
+    // Unstash artifacts.
+    unstash 'kube-petclinic'
+    
+    // Deploy
+    powershell 'get-content kube-petclinic.yaml | %{$_ -replace "BUILD", $env:BUILD_NUMBER} > temp-kube-petclinic.yaml'
+    powershell 'get-content temp-kube-petclinic.yaml > kube-petclinic.yaml'
+    bat 'kubectl apply -f kube-petclinic.yaml'
+    notify('Application deployed successfully')
+}
 
-					}
-					
-				}
-			}
-		}
-
-		stage("Build Docker Image"){
-			steps{
-				sh '''
-					./jenkins/docker/buildImage.sh
-				   '''
-			}
-		}
-
-		stage("Archieve Artifacts"){
-			steps{
-				archiveArtifacts artifacts: 'target/*.war', onlyIfSuccessful: true
-			}
-		}
-		
-		stage("Push Image to Repository"){
-			environment{
-                		REPO_USER='hirendrakoche'
-               			REPO_PASS=credentials('docker-hub-pass')
-        		}
-			steps{
-				sh '''
-					./jenkins/docker/pushImage.sh $REPO_USER $REPO_PASS
-				   '''
-			}
-		}
-
-		stage("Publish Test Results"){
-			steps{
-				sh 'sleep 2'	
-				junit 'target/surefire-reports/*.xml'
-			}
-		}
-	}
-	
-	post{
-		
-		success{
-			emailext body: '''Build process completed. If you want proceed with deployment, acces below URL.\n${BUILD_URL}input''', subject: '$JOB_NAME #$BUILD_NUMBER : $BUILD_STATUS', to: 'hirendrakoche1@outlook.com'
-
-			input id: 'Deploy', message: 'Build is successful. Do you want to proceed for deployment?', submitter: 'admin', submitterParameter: 'approver'
-
-            ansiColor('xterm') {
-            	ansiblePlaybook colorized: true, disableHostKeyChecking: true, extraVars: [BUILD_TAG: "$BUILD_NUMBER"], inventory: 'jenkins/docker/deploy/hosts', playbook: 'jenkins/docker/deploy/deploy.yml'
-            }
-		}
-
-	}
+def notify(STATUS) {
+    emailext body: """<p>Check console output at &QUOT;<a href='${env.BUILD_URL}'>${env.JOB_NAME} [${env.BUILD_NUMBER}]</a>&QUOT;</p>""", subject: """$JOB_NAME - #$BUILD_NUMBER : $STATUS""", to: 'hirendrakoche1@outlook.com'
 }
