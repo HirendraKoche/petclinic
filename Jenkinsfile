@@ -9,7 +9,7 @@ node {
     
     // Build code using docker image maven:3-apline
     stage 'BUILD'
-    powershell 'docker run --rm -v $env:M2_REPO:/root/.m2 -v $env:WORKSPACE:/code -w /code maven:3-alpine mvn clean package'
+    powershell 'docker run --rm -v ${env:M2_REPO}:/root/.m2 -v ${env:WORKSPACE}:/code -w /code maven:3-alpine mvn clean package'
     
     stage 'Archieve Artifacts'
     stash includes: 'target/*.war, Dockerfile', name: 'petclinic-build-stash'
@@ -32,7 +32,7 @@ node('agent1'){
     unstash 'petclinic-build-stash'
     
     // Build docker image from unstashed artifacts
-    powershell 'docker build -t petclinic:$env:BUILD_NUMBER .'
+    powershell 'docker build -t petclinic:${env:BUILD_NUMBER} .'
     notify('Waiting to Deploy....')
 }
 
