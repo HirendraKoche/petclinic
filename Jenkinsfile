@@ -49,7 +49,7 @@ node('agent1') {
     // Deploy
     powershell 'get-content kube-petclinic.yaml | %{$_ -replace "BUILD", $env:BUILD_NUMBER} > temp-kube-petclinic.yaml'
     powershell 'get-content temp-kube-petclinic.yaml > kube-petclinic.yaml'
-    bat 'kubectl apply -f kube-petclinic.yaml'
+    powershell 'kubectl apply -f kube-petclinic.yaml'
     notify('Application deployed successfully')
 }
 
