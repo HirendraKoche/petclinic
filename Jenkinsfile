@@ -1,4 +1,4 @@
-podTemplate(cloud: 'kubernetes', containers: [containerTemplate(args: 'cat', command: '/bin/sh -c', image: 'maven:3-alpine', name: 'maven', resourceLimitCpu: '', resourceLimitMemory: '', resourceRequestCpu: '', resourceRequestMemory: '', ttyEnabled: true, workingDir: '/home/jenkins/agent')], label: 'build-agent', namespace: 'jenkins'){
+podTemplate(cloud: 'kubernetes', containers: [containerTemplate(args: '/dev/null', command: 'tailf', image: 'maven:3-alpine', name: 'maven', ttyEnabled: true, workingDir: '/home/jenkins/agent')], label: 'build-agent'){
     node('build-agent'){
         stage 'CheckOut Code'
         checkout scm
