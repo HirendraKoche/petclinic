@@ -1,8 +1,9 @@
-podTemplate(yaml: """
+podTemplate(cloud: 'kubernetes', yaml: """
 apiVersion: v1
 kind: Pod
 metadata:
   name: build-agent
+  namespace: jenkins
   labels:
     name: build-agent
 spec:
