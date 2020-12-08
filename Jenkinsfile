@@ -1,5 +1,5 @@
 podTemplate(
-    label: 'build-agent'
+    label: 'build-agent',
     podRetention: always(),
     containers: [
         containerTemplate(
