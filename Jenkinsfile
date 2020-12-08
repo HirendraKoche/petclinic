@@ -1,5 +1,5 @@
 podTemplate(
-    cluster: 'kubernetes',
+    cloud: 'kubernetes',
     label: 'build-agent',
     containers: [
         containerTemplate(
