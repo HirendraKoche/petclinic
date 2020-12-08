@@ -1,6 +1,5 @@
 podTemplate(
     label: 'build-agent',
-    podRetention: always(),
     containers: [
         containerTemplate(
             command: 'cat', 
