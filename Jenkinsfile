@@ -1,5 +1,4 @@
 podTemplate(
-    label: 'build-agent',
     podRetention: always(),
     containers: [
         containerTemplate(
@@ -11,7 +10,7 @@ podTemplate(
     ]
  )
  {
-    node('build-agent'){
+    node(POD_LABEL){
         stage 'CheckOut Code'
         git credentialsId: 'git-user', url: 'https://github.com/HirendraKoche/Maven-petclinic-project.git'
         container('maven'){ 
