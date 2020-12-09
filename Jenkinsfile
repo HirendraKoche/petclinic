@@ -1,22 +1,42 @@
 podTemplate(
-    cloud: 'kubernetes',
-    label: 'build-agent',
+    cloud: 'kubernetes', 
+    label: 'build-agent', 
+    name: 'build-agent', 
+    namespace: 'jenkins', 
+    showRawYaml: false, 
     containers: [
         containerTemplate(
-            command: 'cat', 
-            image: 'maven:3.3.9-jdk-8-alpine', 
+            args: 'cat', 
+            command: '/bin/sh -c', 
+            image: 'maven:3-alpine', 
             name: 'maven', 
-            ttyEnabled: true
-        ),
-    ],
+            resourceLimitCpu: '', 
+            resourceLimitMemory: '', 
+            resourceRequestCpu: '', 
+            resourceRequestMemory: '', 
+            ttyEnabled: true, 
+            workingDir: '/home/jenkins/agent'
+        ), 
+        containerTemplate(
+            args: 'cat', 
+            command: '/bin/sh -c', 
+            image: 'jenkinsci/slave', 
+            name: 'jnlp', 
+            resourceLimitCpu: '', 
+            resourceLimitMemory: '', 
+            resourceRequestCpu: '', 
+            resourceRequestMemory: '', 
+            ttyEnabled: true, 
+            workingDir: '/home/jenkins/agent'
+        )
+    ], 
     volumes: [
         hostPathVolume(
-            mountPath: '/var/run/docker.sock',
-            hostPath: '/var/run/docker.sock'
-        ),  
-    ],
- )
- {
+            hostPath: '/var/run/docker.sock', 
+            mountPath: '/var/run/docker.sock'
+        )
+    ]
+){
     node('build-agent'){
         stage 'CheckOut Code'
         git credentialsId: 'git-user', url: 'https://github.com/HirendraKoche/Maven-petclinic-project.git'
