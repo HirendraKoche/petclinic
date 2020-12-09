@@ -38,9 +38,11 @@ podTemplate(
     ]
 ){
     node('build-agent'){
-        stage 'CheckOut Code'
-        git credentialsId: 'git-user', url: 'https://github.com/HirendraKoche/Maven-petclinic-project.git'
-        container('maven'){ 
+        container('maven'){
+            stage 'CheckOut Code'
+            git credentialsId: 'git-user', url: 'https://github.com/HirendraKoche/Maven-petclinic-project.git'
+
+            stage 'Build code'
             sh 'mvn clean package'
         }
     }
