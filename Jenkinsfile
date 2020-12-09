@@ -18,9 +18,7 @@ podTemplate(
             workingDir: '/home/jenkins/agent'
         ), 
         containerTemplate(
-            args: 'cat', 
-            command: '/bin/sh -c', 
-            image: 'jenkinsci/slave', 
+            image: 'jenkins/slave:3.23-1-alpine', 
             name: 'jnlp', 
             resourceLimitCpu: '', 
             resourceLimitMemory: '', 
