@@ -15,7 +15,7 @@ podTemplate(
             resourceRequestCpu: '', 
             resourceRequestMemory: '', 
             ttyEnabled: true, 
-            workingDir: '/home/jenkins/agent'
+            workingDir: '/home/jenkins'
         ), 
         containerTemplate(
             image: 'jenkins/slave:3.23-1-alpine', 
@@ -25,7 +25,7 @@ podTemplate(
             resourceRequestCpu: '', 
             resourceRequestMemory: '', 
             ttyEnabled: true, 
-            workingDir: '/home/jenkins/agent'
+            workingDir: '/home/jenkins'
         )
     ], 
     volumes: [
