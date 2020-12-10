@@ -1,9 +1,6 @@
 podTemplate(
     cloud: 'kubernetes', 
-    label: 'build-agent', 
-    name: 'build-agent', 
     namespace: 'jenkins', 
-    showRawYaml: false, 
     containers: [
         containerTemplate(
             args: 'cat', 
@@ -15,7 +12,7 @@ podTemplate(
             resourceRequestCpu: '', 
             resourceRequestMemory: '', 
             ttyEnabled: true, 
-            workingDir: '/home/jenkins'
+            workingDir: '/home/jenkins/agent'
         ), 
         containerTemplate(
             image: 'jenkins/inbound-agent', 
@@ -35,7 +32,7 @@ podTemplate(
             resourceRequestCpu: '', 
             resourceRequestMemory: '', 
             ttyEnabled: true, 
-            workingDir: '/home/jenkins'
+            workingDir: '/home/jenkins/agent'
         )
     ], 
     volumes: [
@@ -45,7 +42,7 @@ podTemplate(
         )
     ]
 ){
-    node('build-agent'){
+    node(POD_LABEL){
         container('maven'){
             stage 'CheckOut Code'
             checkout scm
