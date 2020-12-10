@@ -39,7 +39,11 @@ podTemplate(
         hostPathVolume(
             hostPath: '/var/run/docker.sock', 
             mountPath: '/var/run/docker.sock'
-        )
+        ),
+        hostPathVolume(
+            hostPath: '/var/run/docker.sock', 
+            mountPath: '/var/run/docker.sock'
+        ),
     ]
 ){
     node(POD_LABEL){
@@ -49,6 +53,12 @@ podTemplate(
 
             stage 'Build code'
             sh 'mvn clean package'
+
+            stage 'Publish Artifacts'
+            archiveArtifacts allowEmptyArchive: true, artifacts: 'target/*.war', followSymlinks: false, onlyIfSuccessful: true
+
+            stage 'Publish Test Results'
+            junit allowEmptyResults: true, testResults: 'target/surefire-reports/*.xml'
         }
     }
 }
