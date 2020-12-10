@@ -18,8 +18,18 @@ podTemplate(
             workingDir: '/home/jenkins'
         ), 
         containerTemplate(
-            image: 'jenkins/slave:3.23-1-alpine', 
-            name: 'jnlp', 
+            image: 'jenkins/inbound-agent', 
+            name: 'jnlp',  
+            envVars: [
+                envVar(
+                    key: 'JENKINS_URL',
+                    value: 'http://jenkins-svc:8080'
+                ),
+                envVar(
+                    key: 'JENKINS_TUNNEL',
+                    value: 'jenkins-svc:50000'
+                ),
+            ],
             resourceLimitCpu: '', 
             resourceLimitMemory: '', 
             resourceRequestCpu: '', 
@@ -38,7 +48,7 @@ podTemplate(
     node('build-agent'){
         container('maven'){
             stage 'CheckOut Code'
-            git credentialsId: 'git-user', url: 'https://github.com/HirendraKoche/Maven-petclinic-project.git'
+            checkout scm
 
             stage 'Build code'
             sh 'mvn clean package'
