@@ -37,13 +37,36 @@ kind: Service
 apiVersion: v1
 metadata:
     name: petclinic-svc
+    labels:
+        app: petclinic
+        env: dev
+    namespace: petclinic
 spec:
-    type: LoadBalancer
+    type: ClusterIP
     selector:
         app: petclinic
         env: dev
     ports:
         - port: 8080
           targetPort: 8080
+          protocol: TCP
+
+
+---
+kind: Ingress
+apiVersion: extensions/v1beta1
+metadata:
+  name: petclinic-ingress
+  namespace: petclinic
+ # annotations:
+ #   nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /petclinic
+            backend:
+              serviceName: petclinic-svc
+              servicePort: 8080     
 
 
