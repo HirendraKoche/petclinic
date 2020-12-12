@@ -42,7 +42,7 @@ podTemplate(
                 - name: docker
                   image: docker:20
                   tty: true
-                  workingDir: /petclinic
+                  workingDir: /home/jenkins/agent
                   volumeMounts:
                     - name: docker-sock
                       mountPath: /var/run/docker.sock
