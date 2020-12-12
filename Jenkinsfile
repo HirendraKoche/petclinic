@@ -70,7 +70,7 @@ podTemplate(
 
         container('docker'){
             stage 'Create Image'
-            docker build -t petclinic:$BUILD_NUMBER
+            sh 'docker build -t petclinic:$BUILD_NUMBER .'
         }
     }
 }
