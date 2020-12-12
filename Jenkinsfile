@@ -63,4 +63,5 @@ podTemplate(
             stage 'Publish Test Results'
             junit allowEmptyResults: true, testResults: 'target/surefire-reports/*.xml'
         }
+    }
 }
