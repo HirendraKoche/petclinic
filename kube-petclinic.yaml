@@ -1,7 +1,14 @@
+kind: Namespace
+apiVersion: v1
+metadata:
+    name: petclinic
+
+---
 kind: Deployment
 apiVersion: apps/v1
 metadata:
     name: petclinic
+    namespace: petclinic
     labels:
         app: petclinic
         env: dev
@@ -24,3 +31,19 @@ spec:
                   resources: {}
                   ports:
                     - containerPort: 8080
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+    name: petclinic-svc
+spec:
+    type: LoadBalancer
+    selector:
+        app: petclinic
+        env: dev
+    ports:
+        - port: 8080
+          targetPort: 8080
+
+

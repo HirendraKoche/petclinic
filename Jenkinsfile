@@ -13,6 +13,9 @@ podTemplate(
                 - name: m2-repo
                   persistentVolumeClaim:
                     claimName: jenkins-pvc
+                - name: kube-vol
+                  hostPath: 
+                    path: /root/.kube
             
             containers:
                 - name: maven
@@ -49,6 +52,15 @@ podTemplate(
                   volumeMounts:
                     - name: docker-sock
                       mountPath: /var/run/docker.sock
+                
+                - name: kubectl
+                  image: kubectl:lts
+                  imagePullPolicy: IfNotPresent
+                  tty: true
+                  workingDir: /home/jenkins/agent
+                  volumeMounts:
+                    - name: kube-vol
+                      mountPath: /root/.kube
     """
 ){
     //pipeline code
@@ -66,15 +78,26 @@ podTemplate(
 
             stage 'Publish Test Results'
             junit allowEmptyResults: true, testResults: 'target/surefire-reports/*.xml'
+
+            notify('Completed')
         }
 
         container('docker'){
             stage 'Create Image'
             sh 'docker build -t petclinic:$BUILD_NUMBER .'
         }
+
+        container('kubectl'){
+            stage 'Deploy Image'
+            notify('ReadToDeploy')
+            input "Deploy?"
+            sh 'sed -i "s|BUILD|$BUILD_NUMBER|g" kube-petclinic.yaml'
+            sh 'kubectl apply -f kube-petclinic.yaml'
+            notify('Deployed')
+        }
     }
 }
 
 def notify(STATUS) {
-    emailext body: """<p>Check console output at &QUOT;<a href='${env.BUILD_URL}'>${env.JOB_NAME} [${env.BUILD_NUMBER}]</a>&QUOT;</p>""", subject: """$JOB_NAME - #$BUILD_NUMBER : $STATUS""", to: 'hirendrakoche1@outlook.com'
+    emailext body: """<p>Check console output at &QUOT;<a href='${env.BUILD_URL}/console'>${env.JOB_NAME} [${env.BUILD_NUMBER}]</a>&QUOT;</p>""", subject: """$JOB_NAME - #$BUILD_NUMBER : $STATUS""", to: 'hirendrakoche1@outlook.com'
 }
