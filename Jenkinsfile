@@ -1,5 +1,5 @@
 podTemplate(
-    cloud: 'kubernetes',
+    cloud: 'k8s',
     yaml: """
         apiVersion: v1
         kind: Pod
