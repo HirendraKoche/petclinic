@@ -11,7 +11,7 @@ podTemplate(
                   hostPath:
                     path: /var/run/docker.sock
                 - name: m2-repo
-                  PersistentVolumeClaim:
+                  persistentVolumeClaim:
                     claimName: jenkins-pvc
             
             containers:
