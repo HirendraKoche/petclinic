@@ -26,7 +26,7 @@ podTemplate(
                   workingDir: /home/jenkins/agent
                   volumeMounts:
                     - name: m2-repo
-                      mountPath: /home/jenkins/agent
+                      mountPath: /root/.m2
                       subPath: m2
                 
                 - name: jnlp
