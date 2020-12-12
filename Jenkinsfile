@@ -17,6 +17,7 @@ podTemplate(
             containers:
                 - name: maven
                   image: maven:3-alpine
+                  imagePullPolicy: IfNotPresent
                   command:
                     - /bin/bash
                     - -c
@@ -31,6 +32,7 @@ podTemplate(
                 
                 - name: jnlp
                   image: jenkins/inbound-agent
+                  imagePullPolicy: IfNotPresent
                   tty: true
                   workingDir: /home/jenkins/agent
                   env:
@@ -41,6 +43,7 @@ podTemplate(
                 
                 - name: docker
                   image: docker:20
+                  imagePullPolicy: IfNotPresent
                   tty: true
                   workingDir: /home/jenkins/agent
                   volumeMounts:
