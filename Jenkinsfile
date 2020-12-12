@@ -8,10 +8,10 @@ podTemplate(
         spec:
             volumes:
                 - name: docker-sock
-                hostPath:
+                  hostPath:
                     path: /var/run/docker.sock
                 - name: m2-repo
-                PersistentVolumeClaim:
+                  PersistentVolumeClaim:
                     claimName: jenkins-pvc
             
             containers:
