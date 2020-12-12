@@ -1,51 +1,54 @@
 podTemplate(
-    cloud: 'kubernetes', 
-    namespace: 'jenkins', 
-    containers: [
-        containerTemplate(
-            args: 'cat', 
-            command: '/bin/sh -c', 
-            image: 'maven:3-alpine', 
-            name: 'maven', 
-            resourceLimitCpu: '', 
-            resourceLimitMemory: '', 
-            resourceRequestCpu: '', 
-            resourceRequestMemory: '', 
-            ttyEnabled: true, 
-            workingDir: '/home/jenkins/agent'
-        ), 
-        containerTemplate(
-            image: 'jenkins/inbound-agent', 
-            name: 'jnlp',  
-            envVars: [
-                envVar(
-                    key: 'JENKINS_URL',
-                    value: 'http://jenkins-svc:8080'
-                ),
-                envVar(
-                    key: 'JENKINS_TUNNEL',
-                    value: 'jenkins-svc:50000'
-                ),
-            ],
-            resourceLimitCpu: '', 
-            resourceLimitMemory: '', 
-            resourceRequestCpu: '', 
-            resourceRequestMemory: '', 
-            ttyEnabled: true, 
-            workingDir: '/home/jenkins/agent'
-        )
-    ], 
-    volumes: [
-        hostPathVolume(
-            hostPath: '/var/run/docker.sock', 
-            mountPath: '/var/run/docker.sock'
-        ),
-        hostPathVolume(
-            hostPath: '/var/run/docker.sock', 
-            mountPath: '/var/run/docker.sock'
-        ),
-    ]
+    cloud: 'kubernetes',
+    yaml: """
+        apiVersion: v1
+        kind: Pod
+        metadata:
+            namespace: jenkins
+        spec:
+            volumes:
+                - name: docker-sock
+                hostPath:
+                    path: /var/run/docker.sock
+                - name: m2-repo
+                PersistentVolumeClaim:
+                    claimName: jenkins-pvc
+            
+            containers:
+                - name: maven
+                  image: maven:3-alpine
+                  command:
+                    - /bin/bash
+                    - -c
+                  args:
+                    - cat
+                  tty: true
+                  workingDir: /home/jenkins/agent
+                  volumeMounts:
+                    - name: m2-repo
+                      mountPath: /home/jenkins/agent
+                      subPath: m2
+                
+                - name: jnlp
+                  image: jenkins/inbound-agent
+                  tty: true
+                  workingDir: /home/jenkins/agent
+                  env:
+                    - name: JENKINS_URL
+                      value: 'http://jenkins-svc:8080'
+                    - name: JENKINS_TUNNEL
+                      value: 'jenkins-svc:50000'
+                
+                - name: docker
+                  image: docker:20
+                  tty: true
+                  workingDir: /petclinic
+                  volumeMounts:
+                    - name: docker-sock
+                      mountPath: /var/run/docker.sock
+    """
 ){
+    //pipeline code
     node(POD_LABEL){
         container('maven'){
             stage 'CheckOut Code'
@@ -60,5 +63,4 @@ podTemplate(
             stage 'Publish Test Results'
             junit allowEmptyResults: true, testResults: 'target/surefire-reports/*.xml'
         }
-    }
 }
