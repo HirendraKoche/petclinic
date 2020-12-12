@@ -67,6 +67,11 @@ podTemplate(
             stage 'Publish Test Results'
             junit allowEmptyResults: true, testResults: 'target/surefire-reports/*.xml'
         }
+
+        container('docker'){
+            stage 'Create Image'
+            docker build -t petclinic:$BUILD_NUMBER
+        }
     }
 }
 
