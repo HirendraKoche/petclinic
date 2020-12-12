@@ -51,6 +51,7 @@ podTemplate(
     //pipeline code
     node(POD_LABEL){
         container('maven'){
+            notify('Started')
             stage 'CheckOut Code'
             checkout scm
 
@@ -64,4 +65,8 @@ podTemplate(
             junit allowEmptyResults: true, testResults: 'target/surefire-reports/*.xml'
         }
     }
+}
+
+def notify(STATUS) {
+    emailext body: """<p>Check console output at &QUOT;<a href='${env.BUILD_URL}'>${env.JOB_NAME} [${env.BUILD_NUMBER}]</a>&QUOT;</p>""", subject: """$JOB_NAME - #$BUILD_NUMBER : $STATUS""", to: 'hirendrakoche1@outlook.com'
 }
