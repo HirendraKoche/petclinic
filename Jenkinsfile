@@ -75,7 +75,8 @@ podTemplate(
             sh 'mvn clean package'
 
             stage 'Publish Artifacts'
-            archiveArtifacts allowEmptyArchive: true, artifacts: 'target/*.war', followSymlinks: false, onlyIfSuccessful: true
+//            archiveArtifacts allowEmptyArchive: true, artifacts: 'target/*.war', followSymlinks: false, onlyIfSuccessful: true
+              nexusPublisher nexusInstanceId: 'nexusrepo1', nexusRepositoryId: 'petclinic', packages: [[$class: 'MavenPackage', mavenAssetList: [[classifier: '', extension: '', filePath: 'target/*.war']], mavenCoordinate: [artifactId: 'spring-petclinic', groupId: 'org.springframework.samples', packaging: 'war', version: '4.2.6-SNAPSHOT']]]
 
             stage 'Publish Test Results'
             junit allowEmptyResults: true, testResults: 'target/surefire-reports/*.xml'
