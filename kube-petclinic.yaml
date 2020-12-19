@@ -28,6 +28,7 @@ spec:
             containers:
                 - name: petclinic
                   image: petclinic:BUILD
+                  imagePullPolicy: IfNotPresent
                   resources: {}
                   ports:
                     - containerPort: 8080
