@@ -6,6 +6,7 @@ podTemplate(
         metadata:
             namespace: jenkins
         spec:
+            serviceAccountName: jenkins
             volumes:
                 - name: docker-sock
                   hostPath:
