@@ -89,7 +89,7 @@ podTemplate(
             sh 'docker build -t hirendrakoche/petclinic:$BUILD_NUMBER .'
 
             withDockerRegistry(credentialsId: 'docker-hub-user') {
-              sh 'docker push petclinic:$BUILD_NUMBER'
+              sh 'docker push hirendrakoche/petclinic:$BUILD_NUMBER'
             }
         }
 
