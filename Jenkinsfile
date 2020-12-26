@@ -76,7 +76,7 @@ podTemplate(
 
             stage 'Publish Artifacts'
 //            archiveArtifacts allowEmptyArchive: true, artifacts: 'target/*.war', followSymlinks: false, onlyIfSuccessful: true
-              nexusPublisher nexusInstanceId: 'nexusrepo1', nexusRepositoryId: 'petclinic', packages: [[$class: 'MavenPackage', mavenAssetList: [[classifier: '', extension: '', filePath: 'target/petclinic.war']], mavenCoordinate: [artifactId: 'spring-petclinic', groupId: 'org.springframework.samples', packaging: 'war', version: '4.2.6']]]
+              nexusPublisher nexusInstanceId: 'nexusrepo1', nexusRepositoryId: 'petclinic-', packages: [[$class: 'MavenPackage', mavenAssetList: [[classifier: '', extension: '', filePath: 'target/petclinic.war']], mavenCoordinate: [artifactId: 'spring-petclinic', groupId: 'org.springframework.samples', packaging: 'war', version: '4.2.6']]]
 
             stage 'Publish Test Results'
             junit allowEmptyResults: true, testResults: 'target/surefire-reports/*.xml'
@@ -87,6 +87,10 @@ podTemplate(
         container('docker'){
             stage 'Create Image'
             sh 'docker build -t petclinic:$BUILD_NUMBER .'
+
+            withDockerRegistry(credentialsId: 'nexus-user', url: 'http://nexus-svc.nexus:8081/nexus/repository/petclinic-image/') {
+              sh 'docker push petclinic:$BUILD_NUMBER'
+            }
         }
 
         container('kubectl'){
