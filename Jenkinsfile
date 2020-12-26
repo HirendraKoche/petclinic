@@ -88,7 +88,7 @@ podTemplate(
             stage 'Create Image'
             sh 'docker build -t petclinic:$BUILD_NUMBER .'
 
-            withDockerRegistry(credentialsId: 'nexus-user', url: 'http://nexus-svc.nexus:8081/nexus/repository/petclinic-image/') {
+            withDockerRegistry(credentialsId: 'docker-hub-user') {
               sh 'docker push petclinic:$BUILD_NUMBER'
             }
         }
