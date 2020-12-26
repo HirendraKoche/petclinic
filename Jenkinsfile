@@ -86,7 +86,7 @@ podTemplate(
 
         container('docker'){
             stage 'Create Image'
-            sh 'docker build -t petclinic:$BUILD_NUMBER .'
+            sh 'docker build -t hirendrakoche/petclinic:$BUILD_NUMBER .'
 
             withDockerRegistry(credentialsId: 'docker-hub-user') {
               sh 'docker push petclinic:$BUILD_NUMBER'
