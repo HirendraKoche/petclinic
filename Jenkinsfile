@@ -41,7 +41,7 @@ podTemplate(
                   workingDir: /home/jenkins/agent
                   env:
                     - name: JENKINS_URL
-                      value: 'http://jenkins-svc:8080'
+                      value: 'http://jenkins-svc:8080/jenkins'
                     - name: JENKINS_TUNNEL
                       value: 'jenkins-svc:50000'
                 
