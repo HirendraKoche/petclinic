@@ -27,7 +27,7 @@ spec:
         spec:
             containers:
                 - name: petclinic
-                    image: petclinic:${BUILD_NUMBER}
+                  image: petclinic:${BUILD_NUMBER}
                   imagePullPolicy: IfNotPresent
                   resources: {}
                   ports:
