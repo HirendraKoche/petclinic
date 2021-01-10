@@ -27,7 +27,7 @@ spec:
         spec:
             containers:
                 - name: petclinic
-                  image: petclinic:BUILD
+                  image: hirendrakoche/petclinic:BUILD
                   imagePullPolicy: IfNotPresent
                   resources: {}
                   ports:
