@@ -52,6 +52,9 @@ podTemplate(
       stage 'Publish Artifacts'
         archiveArtifacts allowEmptyArchive: true, artifacts: 'target/*.war', followSymlinks: false, onlyIfSuccessful: true
 
+        stash includes: 'target/*.war, Dockerfile', name: 'petclinic-build-stash'
+        stash includes: 'kube-petclinic.yaml', name: 'kube-petclinic'
+
       stage 'Publish Test Results'
       junit allowEmptyResults: true, testResults: 'target/surefire-reports/*.xml'
 
@@ -98,6 +101,7 @@ podTemplate(
   node(POD_LABEL){
     container('docker'){
       stage 'Create Image'
+      unstash 'petclinic-build-stash'
       sh 'docker build -t hirendrakoche/petclinic:$BUILD_NUMBER .'
 
       withDockerRegistry(credentialsId: 'docker-hub-user') {
@@ -148,6 +152,7 @@ podTemplate(
       stage 'Deploy Image'
       notify('ReadToDeploy')
       input "Deploy?"
+      unstash 'kube-petclinic'
     //sh 'sed -i "s|BUILD|$BUILD_NUMBER|g" kube-petclinic.yaml'
       sh 'kubectl apply -f kube-petclinic.yaml'
       notify('Deployed')
