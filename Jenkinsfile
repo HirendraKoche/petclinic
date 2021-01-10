@@ -1,4 +1,5 @@
 podTemplate(
+  showRawYaml: false,
   yaml: """
     apiVersion: v1
     kind: Pod
@@ -64,6 +65,7 @@ podTemplate(
 }
 
 podTemplate(
+  showRawYaml: false,
   yaml: """
     apiVersion: v1
     kind: Pod
@@ -113,6 +115,7 @@ podTemplate(
 
 
 podTemplate(
+  showRawYaml: false,
   yaml: """
     apiVersion: v1
     kind: Pod
