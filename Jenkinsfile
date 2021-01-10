@@ -56,7 +56,7 @@ podTemplate(
         stash includes: 'kube-petclinic.yaml', name: 'kube-petclinic'
 
       stage 'Publish Test Results'
-      junit allowEmptyResults: true, testResults: 'target/surefire-reports/*.xml'
+      junit skipPublishingChecks: true, allowEmptyResults: true, testResults: 'target/surefire-reports/*.xml'
 
       notify('Completed')
     }
