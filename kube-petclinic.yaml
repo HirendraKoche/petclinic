@@ -13,7 +13,7 @@ metadata:
         app: petclinic
         env: dev
 spec:
-    replicas: 2
+    replicas: 1
     selector:
         matchLabels:
             app: petclinic
@@ -27,7 +27,7 @@ spec:
         spec:
             containers:
                 - name: petclinic
-                  image: petclinic:${BUILD_NUMBER}
+                  image: petclinic:BUILD
                   imagePullPolicy: IfNotPresent
                   resources: {}
                   ports:
@@ -55,7 +55,7 @@ spec:
 
 ---
 kind: Ingress
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1
 metadata:
   name: petclinic-ingress
   namespace: petclinic
@@ -66,8 +66,11 @@ spec:
     - http:
         paths:
           - path: /petclinic
+            pathType: ImplementationSpecific
             backend:
-              serviceName: petclinic-svc
-              servicePort: 8080     
+              service:
+                name: petclinic-svc
+                port:
+                    number: 8080     
 
 

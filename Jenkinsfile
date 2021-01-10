@@ -156,7 +156,7 @@ podTemplate(
       notify('ReadToDeploy')
       input "Deploy?"
       unstash 'kube-petclinic'
-    //sh 'sed -i "s|BUILD|$BUILD_NUMBER|g" kube-petclinic.yaml'
+      sh 'sed -i "s|BUILD|$BUILD_NUMBER|g" kube-petclinic.yaml'
       sh 'kubectl apply -f kube-petclinic.yaml'
       notify('Deployed')
     }
